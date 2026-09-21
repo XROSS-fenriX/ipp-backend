@@ -23,6 +23,8 @@ class AuthController extends Controller
             'gender' => ['required', 'string', 'max:50'],
             'contact' => ['required', 'string', 'max:255'],
             'account_status' => ['nullable', 'string', 'in:active,inactive'],
+            'school_id' => ['nullable', 'uuid', 'exists:schools,school_id'],
+            'elective_id' => ['nullable', 'uuid', 'exists:electives,elective_id'],
         ]);
 
         $user = User::create([

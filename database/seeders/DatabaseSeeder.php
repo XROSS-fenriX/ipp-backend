@@ -15,11 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Execute dependent seeders in order
+        $this->call([
+            SchoolSeeder::class,
+            TrackSeeder::class,
+            ElectiveSeeder::class,
+            UserSeeder::class,
         ]);
+
+        // Generate 50 dummy users using the UserFactory
+        User::factory()->count(50)->create();
     }
 }
