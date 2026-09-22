@@ -61,6 +61,27 @@ class UserSeeder extends Seeder
             ]
         );
 
+        // 5 Additional Teacher Accounts
+        for ($i = 1; $i <= 5; $i++) {
+            User::updateOrCreate(
+                ['email' => "teacher{$i}@school.edu"],
+                [
+                    'user_id' => (string) Str::uuid(),
+                    'password' => $password,
+                    'role' => 'teacher',
+                    'fname' => 'Teacher',
+                    'mname' => 'T.',
+                    'lname' => "Num{$i}",
+                    'gender' => $i % 2 === 0 ? 'Female' : 'Male',
+                    'contact' => "0923456789{$i}",
+                    'account_status' => 'active',
+                    'school_id' => $school?->school_id,
+                    'elective_id' => null,
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
+
         // Student Account
         User::updateOrCreate(
             ['email' => 'student@school.edu'],

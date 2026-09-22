@@ -78,6 +78,16 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user()->load([
+            'elective',
+            'school',
+            'incidents',
+            'userAddresses',
+            'studentDetails',
+            'teacherDetails',
+            'classrooms',
+        ]);
+
+        return response()->json($user);
     }
 }

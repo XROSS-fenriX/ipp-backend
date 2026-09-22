@@ -7,9 +7,23 @@ use Illuminate\Http\Request;
 
 class IncidentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Incident::all());
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json(
+                Incident::all()
+            );
+        }
+
+        if ($user->role === 'teacher' || $user->role === 'student') {
+            return response()->json(
+                $user->incidents
+            );
+        }
+
+        return response()->json(['message' => 'Unauthorized access.'], 403);
     }
 
     public function store(Request $request)
@@ -27,9 +41,22 @@ class IncidentController extends Controller
         return response()->json($incident, 201);
     }
 
-    public function show(Incident $incident)
+    public function show(Request $request, Incident $incident)
     {
-        return response()->json($incident);
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json($incident);
+        }
+
+        if (
+            in_array($user->role, ['teacher', 'student']) &&
+            $incident->caused_by === $user->user_id
+        ) {
+            return response()->json($incident);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
     public function update(Request $request, Incident $incident)

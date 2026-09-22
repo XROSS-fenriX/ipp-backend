@@ -7,9 +7,23 @@ use Illuminate\Http\Request;
 
 class ElectiveController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Elective::all());
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json(
+                Elective::all()
+            );
+        }
+
+        if ($user->role === 'teacher' || $user->role === 'student') {
+            return response()->json(
+                $user->electives
+            );
+        }
+
+        return response()->json(['message' => 'Unauthorized access.'], 403);
     }
 
     public function store(Request $request)
@@ -24,9 +38,21 @@ class ElectiveController extends Controller
         return response()->json($elective, 201);
     }
 
-    public function show(Elective $elective)
+    public function show(Request $request, Elective $elective)
     {
-        return response()->json($elective);
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json($elective);
+        }
+
+        if (in_array($user->role, ['teacher', 'student']) &&
+            $user->electives->contains('elective_id', $elective->elective_id))
+        {
+            return response()->json($elective);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
     public function update(Request $request, Elective $elective)

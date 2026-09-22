@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'user_id' => (string) Str::uuid(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'role' => fake()->randomElement(['student', 'teacher']),
+            'role' => fake()->randomElement(['student']),
             'fname' => fake()->firstName(),
             'mname' => fake()->optional(0.7)->lastName(), // 70% chance of having a middle name
             'lname' => fake()->lastName(),

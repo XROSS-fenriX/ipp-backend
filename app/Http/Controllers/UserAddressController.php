@@ -7,9 +7,23 @@ use Illuminate\Http\Request;
 
 class UserAddressController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(UserAddress::all());
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json(
+                UserAddress::all()
+            );
+        }
+
+        if ($user->role === 'teacher' || $user->role === 'student') {
+            return response()->json(
+                $user->addresses
+            );
+        }
+
+        return response()->json(['message' => 'Unauthorized access.'], 403);
     }
 
     public function store(Request $request)
@@ -29,9 +43,22 @@ class UserAddressController extends Controller
         return response()->json($address, 201);
     }
 
-    public function show(UserAddress $address)
+    public function show(Request $request, UserAddress $address)
     {
-        return response()->json($address);
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json($address);
+        }
+
+        if (
+            in_array($user->role, ['teacher', 'student']) &&
+            $address->user_id === $user->user_id
+        ) {
+            return response()->json($address);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
     public function update(Request $request, UserAddress $address)

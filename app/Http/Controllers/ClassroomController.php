@@ -7,9 +7,23 @@ use Illuminate\Http\Request;
 
 class ClassroomController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Classroom::all());
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json(
+                Classroom::all()
+            );
+        }
+
+        if ($user->role === 'teacher' || $user->role === 'student') {
+            return response()->json(
+                $user->classroom
+            );
+        }
+
+        return response()->json(['message' => 'Unauthorized access.'], 403);
     }
 
     public function store(Request $request)
@@ -27,9 +41,22 @@ class ClassroomController extends Controller
         return response()->json($classroom, 201);
     }
 
-    public function show(Classroom $classroom)
+    public function show(Request $request, Classroom $classroom)
     {
-        return response()->json($classroom);
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            return response()->json($classroom);
+        }
+
+        if (
+            ($user->role === 'teacher' && $classroom->teacher_id === $user->user_id) ||
+            ($user->role === 'student' && $classroom->classroom_id === $user->classroom_id)
+        ) {
+            return response()->json($classroom);
+        }
+
+        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
     public function update(Request $request, Classroom $classroom)
