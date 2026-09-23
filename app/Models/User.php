@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,6 +42,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function enrolledClassrooms(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Classroom::class,
+            'classroom_user', // Pivot table name[cite: 3]
+            'user_id',        // Foreign key of the current model in pivot[cite: 3]
+            'classroom_id'    // Foreign key of the related model in pivot[cite: 3]
+        )->withTimestamps(); // Includes created_at and updated_at from the pivot[cite: 3]
     }
 
     public function elective(): BelongsTo

@@ -41,9 +41,32 @@ class ClassroomController extends Controller
         return response()->json($classroom, 201);
     }
 
+    public function insertAssessment(Request $request, Classroom $classroom)
+    {
+        $validated = $request->validate([
+            'classroom_id' => 'required|exists:classrooms,classroom_id',
+            'assessment_id' => 'required|exists:assessments,assessment_id',
+            ]);
+
+        // $user = User::findOrFail($validated['user_id']);
+
+        // 3. Attach the ID to the pivot table with extra attributes if necessary
+        $classroom->enrolledClassrooms()->attach($validated['classroom_id']);
+
+        return response()->json([
+            'message' => 'Student successfully enrolled!'
+        ], 201);
+    }
+
     public function show(Request $request, Classroom $classroom)
     {
         $user = $request->user();
+        $classroom->load([
+            'classroomMaterials',
+            'classroomAnnouncements',
+            'classroomDeadlines',
+            'assessments'
+        ]);
 
         if ($user->role === 'admin') {
             return response()->json($classroom);

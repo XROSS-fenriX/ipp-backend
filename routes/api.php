@@ -27,10 +27,13 @@ use App\Http\Controllers\IdentificationAnswerController;
 use App\Http\Controllers\EnumerationAnswerController;
 use App\Http\Controllers\AssessmentSubmissionController;
 use App\Http\Controllers\AssessmentAnswerController;
+use App\Http\Controllers\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -71,6 +74,8 @@ Route::middleware(['auth:sanctum', 'account.active'])->group(function () {
 
         // Teacher profile details management
         Route::apiResource('teacher-details', TeacherDetailController::class);
+
+        Route::post('classrooms/{classroom}/assessment', [ClassroomController::class, 'insertAssessment']);
     });
 
     // =========================================================================
@@ -83,6 +88,9 @@ Route::middleware(['auth:sanctum', 'account.active'])->group(function () {
 
         // Student profile details management
         Route::apiResource('student-details', StudentDetailController::class);
+
+        // Enroll to a Classroom
+        Route::post('/user/classroom', [UserController::class, 'enrollStudent']);
     });
 
     // =========================================================================

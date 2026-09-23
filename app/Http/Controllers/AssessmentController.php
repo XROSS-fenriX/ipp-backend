@@ -26,6 +26,12 @@ class AssessmentController extends Controller
 
     public function show(Assessment $assessment)
     {
+        $assessment->load([
+            'assessmentQuestions.mcqChoices',
+            'assessmentQuestions.identificationAnswers',
+            'assessmentQuestions.enumerationAnswers',
+        ]);
+
         return response()->json($assessment);
     }
 

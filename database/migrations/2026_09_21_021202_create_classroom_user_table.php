@@ -12,10 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('classroom_user', function (Blueprint $table) {
-            $table->uuid('cu_id')->primary();
             $table->foreignUuid('user_id')->constrained(table: 'users', column: 'user_id')->cascadeOnDelete();
             $table->foreignUuid('classroom_id')->constrained(table: 'classrooms', column: 'classroom_id')->cascadeOnDelete();
             $table->timestamps();
+
+            // Ensures fast lookups and prevents duplicate pairs
+            $table->primary(['user_id', 'classroom_id']);
         });
     }
 

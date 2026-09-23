@@ -86,6 +86,7 @@ class AuthController extends Controller
             'studentDetails',
             'teacherDetails',
             'classrooms',
+            'enrolledClassrooms'
         ]);
 
         return response()->json($user);

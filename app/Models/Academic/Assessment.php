@@ -5,6 +5,7 @@ namespace App\Models\Academic;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['assessment_title', 'assessment_type'])]
@@ -25,6 +26,16 @@ class Assessment extends Model
     // {
     //     return $this->hasMany(CommunityAssessment::class, 'assessment_id', 'assessment_id');
     // }
+
+    public function classrooms(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Assessment::class,
+            'assessment_classroom',
+            'classroom_id',
+            'assessment_id'
+        )->withTimestamps();
+    }
 
     public function assessmentQuestions(): HasMany
     {

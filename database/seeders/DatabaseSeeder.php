@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             TrackSeeder::class,
             ElectiveSeeder::class,
             UserSeeder::class,
+            AssessmentSeeder::class
         ]);
 
         // Generate 50 dummy users using the UserFactory
